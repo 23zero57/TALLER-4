@@ -1,1 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tablas de Multiplicar - App Móvil</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Ocultar barra de scroll manteniendo funcionalidad */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Animación suave para cambios de vista */
+        .fade-in {
+            animation: fadeIn 0.25s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between select-none">
 
+    <!-- Contenedor Principal estilo Teléfono Móvil -->
+    <div class="w-full max-w-md mx-auto bg-slate-950 min-h-screen flex flex-col shadow-2xl relative overflow-hidden">
+
+        <!-- Cabecera (Header) Tipo App Nativa -->
+        <header class="bg-gradient-to-r from-indigo-600 to-blue-600 pt-6 pb-5 px-5 shadow-lg rounded-b-3xl z-10 sticky top-0">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white shadow-inner">
+                        <i class="fa-solid fa-calculator text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-extrabold tracking-tight text-white">MultiplicaApp</h1>
+                        <p class="text-xs text-indigo-100 font-medium">Tablas y Lista Especial</p>
+                    </div>
+                </div>
+                <button onclick="cambiarPestana('especial')" class="relative bg-white/15 hover:bg-white/25 active:scale-95 transition p-2.5 rounded-2xl text-white">
+                    <i class="fa-solid fa-bookmark text-lg"></i>
+                    <span id="header-badge" class="absolute -top-1.5 -right-1.5 bg-emerald-500 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-indigo-600 shadow">0</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Notificación Flotante (Toast) -->
+        <div id="toast" class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 w-11/12 max-w-sm">
+            <div id="toast-content" class="bg-emerald-600 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center space-x-3 border border-emerald-400/30">
+                <i id="toast-icon" class="fa-solid fa-circle-check text-xl"></i>
+                <span id="toast-msg" class="text-sm font-semibold">Mensaje</span>
+            </div>
+        </div>
+
+        <!-- Área de Contenido Dinámico -->
+        <main class="flex-1 overflow-y-auto px-4 pt-5 pb-28 space-y-5">
+
+            <!-- ========================================== -->
+            <!-- VISTA 0: MENÚ PRINCIPAL                    -->
+            <!-- ========================================== -->
+            <section id="view-inicio" class="fade-in space-y-4">
+                <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 shadow-md">
+                    <h2 class="text-lg font-bold text-white mb-1">¡Bienvenido! 👋</h2>
+                    <p class="text-slate-400 text-sm">Selecciona una de las opciones del menú principal para comenzar:</p>
+                </div>
+
+                <!-- Botón Opción 1 -->
+                <button onclick="cambiarPestana('basicas')" class="w-full bg-slate-900 hover:bg-slate-800/80 active:scale-[0.98] transition-all border border-slate-800 rounded-3xl p-5 text-left flex items-center space-x-4 shadow-md group">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center text-2xl group-hover:bg-blue-500 group-hover:text-white transition-colors shrink-0">
+                        <i class="fa-solid fa-table-cells"></i>
+                    </div>
+                    <div class="flex-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-400">Opción 1</span>
+                        <h3 class="text-base font-bold text-white mt-0.5">Tablas del 1 al 10</h3>
+                        <p class="text-xs text-slate-400 mt-1">Consulta de manera organizada todas las tablas básicas.</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-600"></i>
+                </button>
+
+                <!-- Botón Opción 2 -->
+                <button onclick="cambiarPestana('crear')" class="w-full bg-slate-900 hover:bg-slate-800/80 active:scale-[0.98] transition-all border border-slate-800 rounded-3xl p-5 text-left flex items-center space-x-4 shadow-md group">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-2xl group-hover:bg-emerald-500 group-hover:text-white transition-colors shrink-0">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <div class="flex-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Opción 2</span>
+                        <h3 class="text-base font-bold text-white mt-0.5">Crear Tabla Personalizada</h3>
+                        <p class="text-xs text-slate-400 mt-1">Elige cualquier número, rango (10, 20 o 30) y guárdala.</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-600"></i>
+                </button>
+
+                <!-- Botón Opción 3 -->
+                <button onclick="cambiarPestana('especial')" class="w-full bg-slate-900 hover:bg-slate-800/80 active:scale-[0.98] transition-all border border-slate-800 rounded-3xl p-5 text-left flex items-center space-x-4 shadow-md group">
+                    <div class="w-14 h-14 rounded-2xl bg-purple-500/15 border border-purple-500/30 text-purple-400 flex items-center justify-center text-2xl group-hover:bg-purple-500 group-hover:text-white transition-colors shrink-0">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-purple-400">Opción 3</span>
+                            <span id="menu-badge" class="bg-purple-500/20 text-purple-300 text-[11px] font-bold px-2 py-0.5 rounded-full">0 guardadas</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mt-0.5">Mostrar Lista Especial</h3>
+                        <p class="text-xs text-slate-400 mt-1">Revisa todas las tablas personalizadas que has creado.</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-600"></i>
+                </button>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- VISTA 1: TABLAS DEL 1 AL 10                -->
+            <!-- ========================================== -->
+            <section id="view-basicas" class="hidden fade-in space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-white">Tablas del 1 al 10</h2>
+                        <p class="text-xs text-slate-400">Toca un número para filtrar o míralas todas</p>
+                    </div>
+                    <button onclick="filtrarTablaBasica('todas')" id="btn-ver-todas" class="text-xs font-bold bg-indigo-600 text-white px-3 py-1.5 rounded-xl shadow">
+                        Ver Todas
+                    </button>
+                </div>
+
+                <!-- Selector Rápido de Números 1-10 -->
+                <div class="flex space-x-2 overflow-x-auto no-scrollbar py-1" id="selector-basicas">
+                    <!-- Generado dinámicamente por JS -->
+                </div>
+
+                <!-- Contenedor de Tarjetas de Tablas 1 al 10 -->
+                <div id="contenedor-tablas-1-10" class="grid grid-cols-1 gap-4">
+                    <!-- Generado dinámicamente por JS -->
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- VISTA 2: CREAR TABLA PERSONALIZADA         -->
+            <!-- ========================================== -->
+            <section id="view-crear" class="hidden fade-in space-y-5">
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-lg space-y-5">
+                    <div class="flex items-center space-x-3 border-b border-slate-800 pb-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                            <i class="fa-solid fa-plus text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-base font-bold text-white">Nueva Tabla Personalizada</h2>
+                            <p class="text-xs text-slate-400">Se guardará automáticamente en tu Lista Especial</p>
+                        </div>
+                    </div>
+
+                    <!-- Paso 1: Ingresar Número -->
+                    <div class="space-y-2">
+                        <label for="input-numero" class="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                            1. Ingresa el número a multiplicar:
+                        </label>
+                        <div class="relative">
+                            <input type="number" id="input-numero" inputmode="numeric" placeholder="Ej: 7, 15, 24..." 
+                                class="w-full bg-slate-950 border-2 border-slate-800 focus:border-emerald-500 focus:outline-none text-white text-xl font-bold rounded-2xl px-4 py-3.5 transition-colors placeholder:text-slate-600 placeholder:font-normal">
+                            <button onclick="limpiarInputNumero()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1">
+                                <i class="fa-solid fa-Delete-left"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Paso 2: Seleccionar Límite -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                            2. Selecciona el límite de la tabla:
+                        </label>
+                        <div class="grid grid-cols-3 gap-2.5">
+                            <button type="button" onclick="seleccionarLimite(10)" id="btn-lim-10"
+                                class="limite-btn bg-emerald-600 text-white border-2 border-emerald-400 font-bold py-3 px-2 rounded-2xl text-center transition-all flex flex-col items-center justify-center shadow">
+                                <span class="text-xs opacity-80">Opción 1</span>
+                                <span class="text-sm font-extrabold mt-0.5">1 al 10</span>
+                            </button>
+                            <button type="button" onclick="seleccionarLimite(20)" id="btn-lim-20"
+                                class="limite-btn bg-slate-950 text-slate-300 border-2 border-slate-800 font-bold py-3 px-2 rounded-2xl text-center transition-all flex flex-col items-center justify-center">
+                                <span class="text-xs opacity-70">Opción 2</span>
+                                <span class="text-sm font-extrabold mt-0.5">1 al 20</span>
+                            </button>
+                            <button type="button" onclick="seleccionarLimite(30)" id="btn-lim-30"
+                                class="limite-btn bg-slate-950 text-slate-300 border-2 border-slate-800 font-bold py-3 px-2 rounded-2xl text-center transition-all flex flex-col items-center justify-center">
+                                <span class="text-xs opacity-70">Opción 3</span>
+                                <span class="text-sm font-extrabold mt-0.5">1 al 30</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Botón Generar y Guardar -->
+                    <button onclick="generarYGuardarTabla()" 
+                        class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 active:scale-[0.98] text-white font-extrabold py-4 rounded-2xl shadow-lg shadow-emerald-900/30 flex items-center justify-center space-x-2 text-base transition-all">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Generar y Guardar en Lista</span>
+                    </button>
+                </div>
+
+                <!-- Resultado Recién Generado -->
+                <div id="resultado-creacion" class="hidden space-y-3">
+                    <!-- Se llena al crear una tabla -->
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- VISTA 3: LISTA ESPECIAL                    -->
+            <!-- ========================================== -->
+            <section id="view-especial" class="hidden fade-in space-y-4">
+                <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-3xl">
+                    <div>
+                        <h2 class="text-lg font-bold text-white">Lista Especial</h2>
+                        <p class="text-xs text-slate-400">Tablas personalizadas guardadas</p>
+                    </div>
+                    <button id="btn-vaciar-lista" onclick="vaciarListaEspecial()" class="hidden bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span>Vaciar</span>
+                    </button>
+                </div>
+
+                <!-- Contenedor de la Lista Especial -->
+                <div id="contenedor-lista-especial" class="space-y-4">
+                    <!-- Generado dinámicamente por JS -->
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Barra de Navegación Inferior Táctil (Bottom Bar) -->
+        <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-slate-900/95 backdrop-blur-md border-t border-slate-800 px-3 py-2 z-30">
+            <div class="grid grid-cols-4 gap-1">
+                <button onclick="cambiarPestana('inicio')" id="nav-inicio" class="nav-item flex flex-col items-center justify-center py-2 rounded-2xl text-indigo-400 bg-indigo-500/10 font-bold transition-all">
+                    <i class="fa-solid fa-house text-lg mb-1"></i>
+                    <span class="text-[11px]">Menú</span>
+                </button>
+                <button onclick="cambiarPestana('basicas')" id="nav-basicas" class="nav-item flex flex-col items-center justify-center py-2 rounded-2xl text-slate-400 hover:text-slate-200 font-medium transition-all">
+                    <i class="fa-solid fa-table-cells text-lg mb-1"></i>
+                    <span class="text-[11px]">1 al 10</span>
+                </button>
+                <button onclick="cambiarPestana('crear')" id="nav-crear" class="nav-item flex flex-col items-center justify-center py-2 rounded-2xl text-slate-400 hover:text-slate-200 font-medium transition-all">
+                    <i class="fa-solid fa-plus-circle text-lg mb-1"></i>
+                    <span class="text-[11px]">Crear</span>
+                </button>
+                <button onclick="cambiarPestana('especial')" id="nav-especial" class="nav-item relative flex flex-col items-center justify-center py-2 rounded-2xl text-slate-400 hover:text-slate-200 font-medium transition-all">
+                    <i class="fa-solid fa-star text-lg mb-1"></i>
+                    <span class="text-[11px]">Especial</span>
+                    <span id="nav-badge" class="absolute top-1.5 right-5 bg-purple-500 text-white text-[10px] font-extrabold px-1.5 rounded-full hidden">0</span>
+                </button>
+            </div>
+        </nav>
+
+    </div>
+
+    <script>
+        // =========================================================================
+        // ESTADO DE LA APLICACIÓN (Equivalente a lista_especial en tu código Python)
+        // =========================================================================
+        let listaEspecial = [];
+        let limiteSeleccionado = 10;
+        let filtroBasicoActual = 'todas';
+
+        // Cargar datos guardados en el teléfono (localStorage) al iniciar
+        window.onload = function() {
+            try {
+                const guardadas = localStorage.getItem('multiplica_lista_especial');
+                if (guardadas) {
+                    listaEspecial = JSON.parse(guardadas);
+                }
+            } catch (e) {
+                listaEspecial = [];
+            }
+            inicializarVistaTablas1al10();
+            actualizarContadores();
+            renderizarListaEspecial();
+        };
+
+        // Guardar en localStorage para que no se borre al cerrar el navegador
+        function sincronizarStorage() {
+            try {
+                localStorage.setItem('multiplica_lista_especial', JSON.stringify(listaEspecial));
+            } catch (e) {
+                // Continuar en memoria si localStorage está restringido
+            }
+            actualizarContadores();
+        }
+
+        // Actualizar burbujas contadoras de la Lista Especial
+        function actualizarContadores() {
+            const total = listaEspecial.length;
+            document.getElementById('header-badge').innerText = total;
+            document.getElementById('menu-badge').innerText = `${total} ${total === 1 ? 'guardada' : 'guardadas'}`;
+            
+            const navBadge = document.getElementById('nav-badge');
+            if (total > 0) {
+                navBadge.innerText = total;
+                navBadge.classList.remove('hidden');
+            } else {
+                navBadge.classList.add('hidden');
+            }
+        }
+
+        // Mostrar mensaje flotante (Reemplazo amigable de alert/print)
+        function mostrarNotificacion(mensaje, tipo = 'exito') {
+            const toast = document.getElementById('toast');
+            const content = document.getElementById('toast-content');
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-msg');
+
+            msg.innerText = mensaje;
+
+            if (tipo === 'error') {
+                content.className = "bg-rose-600 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center space-x-3 border border-rose-400/30";
+                icon.className = "fa-solid fa-circle-exclamation text-xl";
+            } else {
+                content.className = "bg-emerald-600 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center space-x-3 border border-emerald-400/30";
+                icon.className = "fa-solid fa-circle-check text-xl";
+            }
+
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+            }, 2600);
+        }
+
+        // Navegación entre las 4 pestañas
+        function cambiarPestana(pestana) {
+            const vistas = ['inicio', 'basicas', 'crear', 'especial'];
+            vistas.forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+                const btnNav = document.getElementById(`nav-${v}`);
+                btnNav.className = "nav-item relative flex flex-col items-center justify-center py-2 rounded-2xl text-slate-400 hover:text-slate-200 font-medium transition-all";
+            });
+
+            document.getElementById(`view-${pestana}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${pestana}`);
+            activeBtn.className = "nav-item relative flex flex-col items-center justify-center py-2 rounded-2xl text-indigo-400 bg-indigo-500/15 font-bold transition-all";
+
+            if (pestana === 'especial') {
+                renderizarListaEspecial();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // =========================================================================
+        // FUNCIÓN 1: MOSTRAR TABLAS DEL 1 AL 10 (mostrar_tablas_1_10)
+        // =========================================================================
+        function inicializarVistaTablas1al10() {
+            const selector = document.getElementById('selector-basicas');
+            let botonesHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                botonesHTML += `
+                    <button onclick="filtrarTablaBasica(${i})" id="chip-tabla-${i}"
+                        class="chip-basica shrink-0 w-11 h-11 rounded-2xl bg-slate-900 border border-slate-800 text-slate-300 font-extrabold text-sm flex items-center justify-center transition-all">
+                        ${i}
+                    </button>
+                `;
+            }
+            selector.innerHTML = botonesHTML;
+            renderizarTablas1al10('todas');
+        }
+
+        function filtrarTablaBasica(filtro) {
+            filtroBasicoActual = filtro;
+            // Actualizar estilos de los botones filtro
+            for (let i = 1; i <= 10; i++) {
+                const chip = document.getElementById(`chip-tabla-${i}`);
+                if (filtro === i) {
+                    chip.className = "chip-basica shrink-0 w-11 h-11 rounded-2xl bg-blue-600 border-2 border-blue-400 text-white font-extrabold text-sm flex items-center justify-center shadow-lg transition-all";
+                } else {
+                    chip.className = "chip-basica shrink-0 w-11 h-11 rounded-2xl bg-slate-900 border border-slate-800 text-slate-300 font-extrabold text-sm flex items-center justify-center transition-all";
+                }
+            }
+
+            const btnTodas = document.getElementById('btn-ver-todas');
+            if (filtro === 'todas') {
+                btnTodas.className = "text-xs font-bold bg-indigo-600 text-white px-3 py-1.5 rounded-xl shadow";
+            } else {
+                btnTodas.className = "text-xs font-bold bg-slate-800 text-slate-300 px-3 py-1.5 rounded-xl";
+            }
+
+            renderizarTablas1al10(filtro);
+        }
+
+        function renderizarTablas1al10(filtro) {
+            const contenedor = document.getElementById('contenedor-tablas-1-10');
+            let html = '';
+
+            const inicio = (filtro === 'todas') ? 1 : filtro;
+            const fin = (filtro === 'todas') ? 10 : filtro;
+
+            for (let i = inicio; i <= fin; i++) {
+                html += `
+                    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 shadow-md">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-3">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 font-extrabold text-sm flex items-center justify-center">
+                                    ${i}
+                                </span>
+                                <h3 class="font-bold text-white text-base">Tabla del ${i}</h3>
+                            </div>
+                            <span class="text-[11px] font-semibold text-slate-400 bg-slate-950 px-2.5 py-1 rounded-full">1 al 10</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                `;
+
+                for (let j = 1; j <= 10; j++) {
+                    html += `
+                        <div class="bg-slate-950/90 border border-slate-800/80 rounded-xl px-3 py-2 flex items-center justify-between text-sm">
+                            <span class="text-slate-400 font-medium">${i} × ${j}</span>
+                            <span class="text-blue-400 font-extrabold">= ${i * j}</span>
+                        </div>
+                    `;
+                }
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            contenedor.innerHTML = html;
+        }
+
+        // =========================================================================
+        // FUNCIÓN 2: CREAR TABLA PERSONALIZADA (crear_tabla_personalizada)
+        // =========================================================================
+        function seleccionarLimite(limite) {
+            limiteSeleccionado = limite;
+            const limites = [10, 20, 30];
+            limites.forEach(lim => {
+                const btn = document.getElementById(`btn-lim-${lim}`);
+                if (lim === limite) {
+                    btn.className = "limite-btn bg-emerald-600 text-white border-2 border-emerald-400 font-bold py-3 px-2 rounded-2xl text-center transition-all flex flex-col items-center justify-center shadow";
+                } else {
+                    btn.className = "limite-btn bg-slate-950 text-slate-300 border-2 border-slate-800 font-bold py-3 px-2 rounded-2xl text-center transition-all flex flex-col items-center justify-center";
+                }
+            });
+        }
+
+        function limpiarInputNumero() {
+            const input = document.getElementById('input-numero');
+            input.value = '';
+            input.focus();
+        }
+
+        function generarYGuardarTabla() {
+            const inputVal = document.getElementById('input-numero').value.trim();
+
+            if (inputVal === '' || isNaN(parseInt(inputVal))) {
+                mostrarNotificacion("Error: ingresa un número entero válido", "error");
+                return;
+            }
+
+            const numero = parseInt(inputVal, 10);
+            const limite = limiteSeleccionado;
+
+            // Generar elementos de la tabla usando un bucle for (igual que en tu Python)
+            const elementosTabla = [];
+            for (let j = 1; j <= limite; j++) {
+                elementosTabla.push({
+                    multiplicador: j,
+                    resultado: numero * j
+                });
+            }
+
+            // Guardar automáticamente en la lista especial como objeto/diccionario
+            const tablaInfo = {
+                id: Date.now(),
+                numero: numero,
+                limite: limite,
+                datos: elementosTabla
+            };
+
+            listaEspecial.unshift(tablaInfo); // Agrega al principio para ver la más reciente primero
+            sincronizarStorage();
+
+            mostrarNotificacion(`¡Éxito! Tabla del ${numero} (1 al ${limite}) guardada`);
+
+            // Mostrar la tabla recién generada debajo del formulario
+            const contenedorResultado = document.getElementById('resultado-creacion');
+            let filasHTML = '';
+            elementosTabla.forEach(item => {
+                filasHTML += `
+                    <div class="bg-slate-950 border border-slate-800/80 rounded-xl px-3 py-2 flex items-center justify-between text-sm">
+                        <span class="text-slate-400 font-medium">${numero} × ${item.multiplicador}</span>
+                        <span class="text-emerald-400 font-extrabold">= ${item.resultado}</span>
+                    </div>
+                `;
+            });
+
+            contenedorResultado.innerHTML = `
+                <div class="bg-slate-900 border-2 border-emerald-500/40 rounded-3xl p-4 shadow-lg fade-in">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+                        <div>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">¡Tabla Generada y Guardada!</span>
+                            <h3 class="text-base font-extrabold text-white">Tabla del ${numero} (del 1 al ${limite})</h3>
+                        </div>
+                        <button onclick="cambiarPestana('especial')" class="text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white px-3 py-2 rounded-xl shadow flex items-center space-x-1">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span>Ver Lista</span>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
+                        ${filasHTML}
+                    </div>
+                </div>
+            `;
+            contenedorResultado.classList.remove('hidden');
+        }
+
+        // =========================================================================
+        // FUNCIÓN 3: MOSTRAR LISTA ESPECIAL (mostrar_lista_especial)
+        // =========================================================================
+        function renderizarListaEspecial() {
+            const contenedor = document.getElementById('contenedor-lista-especial');
+            const btnVaciar = document.getElementById('btn-vaciar-lista');
+
+            if (listaEspecial.length === 0) {
+                btnVaciar.classList.add('hidden');
+                contenedor.innerHTML = `
+                    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center space-y-4">
+                        <div class="w-16 h-16 rounded-3xl bg-slate-800 text-slate-500 flex items-center justify-center text-3xl mx-auto">
+                            <i class="fa-solid fa-folder-open"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 class="text-base font-bold text-white">La Lista Especial está vacía</h3>
+                            <p class="text-xs text-slate-400 max-w-xs mx-auto">
+                                Crea una tabla personalizada en la Opción 2 primero para que aparezca guardada aquí.
+                            </p>
+                        </div>
+                        <button onclick="cambiarPestana('crear')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-5 py-3 rounded-2xl shadow inline-flex items-center space-x-2">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Ir a Crear Tabla</span>
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            btnVaciar.classList.remove('hidden');
+            let html = '';
+
+            listaEspecial.forEach((tabla, index) => {
+                let itemsHTML = '';
+                tabla.datos.forEach(item => {
+                    itemsHTML += `
+                        <div class="bg-slate-950 border border-slate-800/80 rounded-xl px-3 py-2 flex items-center justify-between text-sm">
+                            <span class="text-slate-400 font-medium">${tabla.numero} × ${item.multiplicador}</span>
+                            <span class="text-purple-400 font-extrabold">= ${item.resultado}</span>
+                        </div>
+                    `;
+                });
+
+                html += `
+                    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 shadow-md space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <div class="flex items-center space-x-3">
+                                <span class="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-300 font-extrabold text-sm flex items-center justify-center">
+                                    #${index + 1}
+                                </span>
+                                <div>
+                                    <h3 class="font-extrabold text-white text-base">Tabla del ${tabla.numero}</h3>
+                                    <span class="text-xs text-slate-400">Rango: 1 al ${tabla.limite}</span>
+                                </div>
+                            </div>
+                            <button onclick="eliminarTablaIndividual(${tabla.id})" class="text-slate-500 hover:text-rose-400 p-2 rounded-xl transition" title="Eliminar tabla">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
+                            ${itemsHTML}
+                        </div>
+                    </div>
+                `;
+            });
+
+            contenedor.innerHTML = html;
+        }
+
+        function eliminarTablaIndividual(id) {
+            listaEspecial = listaEspecial.filter(t => t.id !== id);
+            sincronizarStorage();
+            renderizarListaEspecial();
+            mostrarNotificacion("Tabla eliminada de la lista");
+        }
+
+        function vaciarListaEspecial() {
+            listaEspecial = [];
+            sincronizarStorage();
+            renderizarListaEspecial();
+            mostrarNotificacion("Se vació la Lista Especial");
+        }
+    </script>
+</body>
+</html>
